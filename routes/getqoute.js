@@ -149,18 +149,22 @@ router.post('/submit-service', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const dbadd = new service({
-      name: name.trim(),
-      number: number.trim(),
-      date: date.trim(),
-    });
-    await dbadd.save();
+    await appendToSheet('GET_SERVICE!A:C', [
+      name.trim(),
+      number.trim(),
+      date.trim()
+    ]);
 
-    await appendToSheet('GET_SERVICE!A1:F', [name.trim(), number.trim(), date.trim()]);
-    res.status(200).json({ message: 'Contact saved successfully' });
+    res.status(200).json({
+      message: 'Contact saved successfully (Google Sheets)'
+    });
+
   } catch (err) {
     console.error('Google Sheets Error:', err.message);
-    res.status(500).json({ error: 'Error saving contact', details: err.message });
+    res.status(500).json({
+      error: 'Error saving contact',
+      details: err.message
+    });
   }
 });
 
